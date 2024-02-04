@@ -1,0 +1,126 @@
+Sub macr()
+'vba excel
+
+Rows("8:8").Select
+    Selection.Delete Shift:=xlUp
+'Insret new columns left from the 1 st
+Columns("A:A").Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+Columns("A:A").Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+Columns("A:A").Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+
+'Insert formulas in new empty columns
+Range("A8").Select
+ActiveCell.FormulaR1C1 = "=IF(ISNUMBER(SEARCH(""."",RC[4])),RC[3],"""")"
+ar = "A8:A3359"
+Selection.AutoFill Destination:=Range(ar), Type:=xlFillDefault
+Range(ar).Select
+For Each Cell In Selection
+    If Cell.HasFormula Then
+        Cell.Formula = Cell.Value
+    End If
+Next Cell
+For Each Cell In Selection
+    If IsEmpty(Cell) Then
+        Cell.Value = Cell.Offset(-1, 0).Value
+    End If
+Next Cell
+For Each Cell In Selection
+    If Cell = 0 Then
+        Cell.ClearContents
+    End If
+Next Cell
+
+Range("B8").Select
+ActiveCell.FormulaR1C1 = "=IF(RC[-1]=RC[2],OFFSET(RC[2],1,0),"""")"
+arb = "B8:B3359"
+Selection.AutoFill Destination:=Range(arb), Type:=xlFillDefault
+Range(arb).Select
+For Each Cell In Selection
+    If Cell.HasFormula Then
+        Cell.Formula = Cell.Value
+    End If
+Next Cell
+
+For Each Cell In Selection
+    If IsEmpty(Cell) Then
+        Cell.Value = Cell.Offset(-1, 0).Value
+    End If
+Next Cell
+For Each Cell In Selection
+    If Cell = 0 Then
+        Cell.ClearContents
+    End If
+Next Cell
+
+Range("C8").Select
+ActiveCell.FormulaR1C1 = "=IF(OR(RC[-2]=RC[1],RC[-1]=RC[1]),"""",RC[1])"
+arñ = "C8:C3359"
+Selection.AutoFill Destination:=Range(arñ), Type:=xlFillDefault
+Range(arñ).Select
+For Each Cell In Selection
+    If Cell.HasFormula Then
+        Cell.Formula = Cell.Value
+    End If
+Next Cell
+
+'filter and delete empty rows
+'select array(range)
+Range("$F$7:$M$3359").Select
+rr = "$F$7:$M$3359"
+
+'autofilter
+ Selection.AutoFilter
+    ActiveSheet.Range(rr).AutoFilter Field:=1, Criteria1:="="
+    ActiveSheet.Range(rr).AutoFilter Field:=2, Criteria1:="="
+    ActiveSheet.Range(rr).AutoFilter Field:=3, Criteria1:="="
+    ActiveSheet.Range(rr).AutoFilter Field:=4, Criteria1:="="
+    ActiveSheet.Range(rr).AutoFilter Field:=5, Criteria1:="="
+    ActiveSheet.Range(rr).AutoFilter Field:=6, Criteria1:="="
+    ActiveSheet.Range(rr).AutoFilter Field:=7, Criteria1:="="
+    ActiveSheet.Range(rr).AutoFilter Field:=8, Criteria1:="="
+ 
+Rows("8:3359").Select
+
+Selection.SpecialCells(xlCellTypeVisible).EntireRow.Delete
+
+ActiveSheet.Range("7:7").AutoFilter Field:=1
+    Rows("7:7").Select
+    Selection.AutoFilter
+
+'delete empy rows
+Rows("7:7").Select
+    Selection.Delete Shift:=xlUp
+
+'rename empty headers
+Range("A5").Select
+ActiveCell.FormulaR1C1 = "namecol"
+Range("B5").Select
+ActiveCell.FormulaR1C1 = "namecol2"
+Range("C5").Select
+ActiveCell.FormulaR1C1 = "namecol3"
+Range("D5").Select
+ActiveCell.FormulaR1C1 = "_"
+Range("E5").Select
+ActiveCell.FormulaR1C1 = "__"
+
+Range("K5:M5").Select
+With Selection
+    .HorizontalAlignment = xlGeneral
+    .VerticalAlignment = xlCenter
+    .WrapText = True
+    .Orientation = 0
+    .AddIndent = False
+    .IndentLevel = 0
+    .ShrinkToFit = False
+    .ReadingOrder = xlContext
+    .MergeCells = False
+ End With
+ Selection.UnMerge
+ Range("K5").Select
+ Selection.Copy
+ Range("L5").Select
+ ActiveSheet.Paste
+ Range("M5").Select
+ ActiveSheet.Paste
+ 
+End Sub
